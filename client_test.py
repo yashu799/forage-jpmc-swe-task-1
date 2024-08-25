@@ -1,25 +1,28 @@
 import unittest
-from client3 import getDataPoint
+from client3 import getDataPoint, getRatio
 
-class ClientTest(unittest.TestCase):
-  def test_getDataPoint_calculatePrice(self):
-    quotes = [
-      {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
-      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
-    ]
-    """ ------------ Add the assertion below ------------ """
+class TestClientFunctions(unittest.TestCase):
 
-  def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
-    quotes = [
-      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
-      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
-    ]
-    """ ------------ Add the assertion below ------------ """
+    def test_getDataPoint(self):
+        # Sample data
+        quotes = [
+            {'stock': 'ABC', 'top_bid': {'price': '100'}, 'top_ask': {'price': '105'}},
+            {'stock': 'DEF', 'top_bid': {'price': '200'}, 'top_ask': {'price': '195'}}
+        ]
+        # Expected results for the above data
+        expected_data_points = [
+            ('ABC', 100.0, 105.0, 100.0),
+            ('DEF', 200.0, 195.0, 200.0)
+        ]
+        # Test each quote
+        for quote, expected in zip(quotes, expected_data_points):
+            self.assertEqual(getDataPoint(quote), expected)
 
-
-  """ ------------ Add more unit tests ------------ """
-
-
+    def test_getRatio(self):
+        # Test cases for getRatio
+        self.assertEqual(getRatio(100, 50), 2.0)
+        self.assertEqual(getRatio(0, 50), 0)
+        self.assertEqual(getRatio(100, 0), float('inf'))
 
 if __name__ == '__main__':
     unittest.main()
